@@ -11,12 +11,12 @@ export function OrderScreen() {
     const { userInfo } = useAppSelector((state) => state.auth)
     const [showDetails, setShowDetails] = useState(false);
     const [orders, setOrders] = useState<Order[]>([]);
-    if (!userInfo) {
+    if (!userInfo?.id) {
         return
     }
     useEffect(() => {
         const fetchOrders = async () => {
-            const response = await getUserOrders({ id: userInfo.id });
+            const response = await getUserOrders({ id: userInfo.id || "" });
             setOrders(response);
         };
         fetchOrders();

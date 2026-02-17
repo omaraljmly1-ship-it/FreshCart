@@ -9,29 +9,28 @@ const protectedRoutes = [
 ];
 
 const authRoutes = [
-  "/login",
-  "/register",
+  "/signin",
+  "/signup",
   "/forgot-password",
   "/reset-password",
 ];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   const token = request.cookies.get("token")?.value || null;
   const isAuthenticated = !!token;
 
   const isProtectedRoute = protectedRoutes.some(
-    (route) => pathname === route || pathname.startsWith(route)
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
   );
 
   const isAuthRoute = authRoutes.some(
-    (route) => pathname === route || pathname.startsWith(route)
+    (route) => pathname === route || pathname.startsWith(`${route}/`)
   );
 
   if (isProtectedRoute && !isAuthenticated) {
-    const loginUrl = new URL("/login", request.url);
-    loginUrl.searchParams.set("redirect", pathname);
+    const loginUrl = new URL("/signin", request.url);
     return NextResponse.redirect(loginUrl);
   }
 
@@ -49,8 +48,8 @@ export const config = {
     "/orders/:path*",
     "/profile/:path*",
     "/wishlist/:path*",
-    "/login",
-    "/register",
+    "/signin",
+    "/signup",
     "/forgot-password",
     "/reset-password",
   ],
